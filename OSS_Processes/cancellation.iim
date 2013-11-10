@@ -1,0 +1,93 @@
+﻿VERSION BUILD=8510617 RECORDER=FX
+'open 1 tab only
+TAB T=1
+
+SET !EXTRACT_TEST_POPUP NO
+
+'ignore errors. this is to allow proceed with macro even if the ip has already been removed
+SET !ERRORIGNORE YES
+
+'wait 2 second instead of default 6s if errors occurs
+SET !TIMEOUT_PAGE 6
+
+PROMPT "Please enter your device to cancell:" !VAR1
+PROMPT "Please enter NOC Password:" !VAR2
+
+'open a device search
+URL GOTO=http://oss2.freenoc.lan/ABLDevice
+WAIT SECONDS=2
+TAG POS=1 TYPE=INPUT:TEXT FORM=ID:OSSMeta-filter-form ATTR=ID:edit-Value CONTENT={{!VAR1}}
+TAG POS=1 TYPE=INPUT:SUBMIT FORM=ID:OSSMeta-filter-form ATTR=ID:edit-submitonce
+TAG POS=1 TYPE=A ATTR=TXT:{{!VAR1}}
+
+'TESTING
+TAG POS=1 TYPE=H2 ATTR=TXT:* EXTRACT=TXT
+SET !VAR4 {{!EXTRACT}}
+SET !EXTRACT NULL
+
+'edit device change sla to default and untick monitoring
+TAG POS=1 TYPE=A ATTR=TXT:Edit
+TAG POS=1 TYPE=SELECT FORM=ID:OSSMeta-form ATTR=ID:edit-sla CONTENT=%-3
+TAG POS=1 TYPE=INPUT:CHECKBOX FORM=ID:OSSMeta-form ATTR=ID:edit-monitored CONTENT=NO
+TAG POS=1 TYPE=TEXTAREA FORM=ID:OSSMeta-form ATTR=ID:edit-reason CONTENT=This<SP>service<SP>is<SP>cancelled<SP>by<SP>Avanti
+TAG POS=1 TYPE=INPUT:SUBMIT FORM=ID:OSSMeta-form ATTR=ID:edit-0
+
+'wait 1s due to OSS 
+WAIT SECONDS=1
+TAG POS=1 TYPE=A ATTR=TXT:Details
+
+'unlink the hardware
+TAG POS=1 TYPE=A ATTR=TXT:Unlink<SP>hardware
+TAG POS=1 TYPE=TEXTAREA FORM=ID:Device-hardware-form ATTR=ID:edit-reason CONTENT=cancelled
+TAG POS=1 TYPE=INPUT:SUBMIT FORM=ID:Device-hardware-form ATTR=ID:edit-0
+
+'wait 1s due to OSS 
+WAIT SECONDS=1
+TAG POS=1 TYPE=A ATTR=TXT:Details
+
+'delete dvb ip
+TAG POS=3 TYPE=A ATTR=TXT:Delete
+TAG POS=1 TYPE=TEXTAREA FORM=ID:OSSMeta-form ATTR=ID:edit-reason CONTENT=cancellation
+TAG POS=1 TYPE=INPUT:SUBMIT FORM=ID:OSSMeta-form ATTR=ID:edit-0
+WAIT SECONDS=1
+
+'delete pop ip
+TAG POS=3 TYPE=A ATTR=TXT:Delete
+TAG POS=1 TYPE=TEXTAREA FORM=ID:OSSMeta-form ATTR=ID:edit-reason CONTENT=cancellation
+TAG POS=1 TYPE=INPUT:SUBMIT FORM=ID:OSSMeta-form ATTR=ID:edit-0
+WAIT SECONDS=1
+
+'unlink the hardware
+TAG POS=1 TYPE=A ATTR=TXT:Unlink<SP>hardware
+TAG POS=1 TYPE=TEXTAREA FORM=ID:Device-hardware-form ATTR=ID:edit-reason CONTENT=Cancelled<SP>by<SP>Avanti
+TAG POS=1 TYPE=INPUT:SUBMIT FORM=ID:Device-hardware-form ATTR=ID:edit-0
+WAIT SECONDS=1
+
+'
+'URL GOTO=http://oss2.freenoc.lan/OSS/SAP/{{!VAR3}}/serviceCall/2nd+line
+'TAG POS=1 TYPE=A ATTR=TXT:Add<SP>new<SP>SAP<SP>Service<SP>Call
+'TAG POS=1 TYPE=INPUT:TEXT FORM=ID:OSSMeta-form ATTR=ID:edit-subject CONTENT=Cancellation<SP>-<SP>ddd
+'TAG POS=1 TYPE=INPUT:TEXT FORM=ID:OSSMeta-form ATTR=ID:edit-businessPartner CONTENT={{!VAR2}}
+'TAG POS=1 TYPE=LABEL FORM=ID:OSSMeta-form ATTR=TXT:Priority:<SP>*
+'TAG POS=1 TYPE=INPUT:SUBMIT FORM=ID:OSSMeta-form ATTR=ID:edit-0
+'TAG POS=1 TYPE=A ATTR=TXT:Followup<SP>Activity
+
+WAIT SECONDS=5
+
+TAB T=2
+URL GOTO=http://10.226.10.42:8959/webauto/scripts/forms/cacforms/cac_login.cfm
+WAIT SECONDS=7
+
+'log in to noc forms
+TAG POS=1 TYPE=INPUT:TEXT FORM=NAME:loginform ATTR=ID:UserId CONTENT={{!VAR4}}
+SET !ENCRYPTION NO
+TAG POS=1 TYPE=INPUT:PASSWORD FORM=NAME:loginform ATTR=ID:Password CONTENT={{!VAR2}}
+TAG POS=1 TYPE=INPUT:SUBMIT FORM=NAME:loginform ATTR=NAME:Submit
+URL GOTO=http://10.226.10.42:8959/webauto/scripts/admin/forms/manual_decommission.cfm
+TAG POS=1 TYPE=INPUT:TEXT FORM=NAME:form1 ATTR=NAME:F_SiteID CONTENT={{!VAR1}}
+TAG POS=1 TYPE=INPUT:BUTTON FORM=NAME:form1 ATTR=*
+TAG POS=1 TYPE=TD ATTR=TXT:A01<SP>-<SP>Reactivated<SP>account<SP>C11<SP>-<SP>Decommissi*
+TAG POS=1 TYPE=SELECT FORM=NAME:form1 ATTR=NAME:F_Reason_Code CONTENT=%C22
+TAG POS=1 TYPE=INPUT:TEXT FORM=NAME:form1 ATTR=NAME:F_Operator_Name CONTENT={{!VAR4}}
+TAG POS=1 TYPE=INPUT:TEXT FORM=NAME:form1 ATTR=NAME:F_Requester_Name CONTENT={{!VAR4}}
+TAG POS=1 TYPE=INPUT:TEXT FORM=NAME:form1 ATTR=NAME:F_Requester_Department CONTENT={{!VAR4}}

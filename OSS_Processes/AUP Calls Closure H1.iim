@@ -1,0 +1,31 @@
+﻿VERSION BUILD=8510617 RECORDER=FX
+TAB T=1
+
+URL GOTO=http://oss2.freenoc.lan/OSS/SAP/1/serviceCall/AUP
+TAG POS=1 TYPE=SELECT FORM=ID:OSSMeta-filter-form ATTR=ID:edit-Column CONTENT=%Queue
+TAG POS=1 TYPE=INPUT:TEXT FORM=ID:OSSMeta-filter-form ATTR=ID:edit-Value CONTENT=AUP
+TAG POS=1 TYPE=INPUT:SUBMIT FORM=ID:OSSMeta-filter-form ATTR=ID:edit-submit
+TAG POS=1 TYPE=SELECT FORM=ID:OSSMeta-filter-form ATTR=ID:edit-Column CONTENT=%Status
+TAG POS=1 TYPE=SELECT FORM=ID:OSSMeta-filter-form ATTR=ID:edit-Equality CONTENT=%=
+TAG POS=1 TYPE=INPUT:TEXT FORM=ID:OSSMeta-filter-form ATTR=ID:edit-Value CONTENT=Open
+TAG POS=1 TYPE=INPUT:SUBMIT FORM=ID:OSSMeta-filter-form ATTR=ID:edit-submit
+ONDOWNLOAD FOLDER=C:\Users\rzdziech\Macros\Datasources FILE=aup_calls.csv WAIT=YES
+TAG POS=1 TYPE=A ATTR=TXT:export<SP>list
+
+WAIT SECONDS=2
+
+SET !DATASOURCE aup_calls.csv 
+SET !DATASOURCE_COLUMNS 8
+
+'set up partner CONTENT=SAP_CODE
+SET !LOOP 2
+SET !DATASOURCE_LINE {{!LOOP}} 
+
+URL GOTO=http://oss2.freenoc.lan/OSS/SAP/1/serviceCall/{{!COL1}}/edit
+TAG POS=1 TYPE=SELECT FORM=ID:OSSMeta-form ATTR=ID:edit-status CONTENT=%-1
+TAG POS=1 TYPE=TEXTAREA FORM=ID:OSSMeta-form ATTR=ID:edit-resolution CONTENT=Aup<SP>closure
+TAG POS=1 TYPE=TEXTAREA FORM=ID:OSSMeta-form ATTR=ID:edit-reason CONTENT=Aup<SP>closure
+TAG POS=1 TYPE=INPUT:SUBMIT FORM=ID:OSSMeta-form ATTR=ID:edit-0
+WAIT SECONDS=1
+
+URL GOTO=http://oss2.freenoc.lan/OSS/SAP/1/serviceCall/AUP

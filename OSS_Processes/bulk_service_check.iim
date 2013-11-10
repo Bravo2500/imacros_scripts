@@ -1,0 +1,27 @@
+﻿VERSION BUILD=8510617 RECORDER=FX
+'open 1 tab only
+TAB T=1
+
+'ignore errors. this is to allow proceed with macro even if the ip has already been removed
+SET !ERRORIGNORE YES
+
+'wait 2 second instead of default 6s if errors occurs
+SET !TIMEOUT_PAGE 2
+
+'set up datasource
+SET !DATASOURCE bulk_service_check.csv 
+SET !DATASOURCE_COLUMNS 2
+
+'set up loop
+SET !LOOP 1
+SET !DATASOURCE_LINE {{!LOOP}}
+
+'open a device search
+URL GOTO=http://oss2.freenoc.lan/ABLDevice
+TAG POS=1 TYPE=INPUT:TEXT FORM=ID:OSSMeta-filter-form ATTR=ID:edit-Value CONTENT={{!COL1}}
+TAG POS=1 TYPE=INPUT:SUBMIT FORM=ID:OSSMeta-filter-form ATTR=ID:edit-submitonce
+TAG POS=1 TYPE=A ATTR=TXT:{{!COL1}}
+
+'service checked
+TAG POS=1 TYPE=A ATTR=TXT:Service<SP>check
+TAG POS=1 TYPE=INPUT:SUBMIT FORM=ID:PoolBandwidthPlan-serviceCheck-form ATTR=ID:edit-0

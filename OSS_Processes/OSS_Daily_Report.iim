@@ -1,0 +1,57 @@
+﻿VERSION BUILD=8510617 RECORDER=FX
+TAB T=1
+TAB CLOSEALLOTHERS
+URL GOTO=http://oss2.freenoc.lan/OSS/SAP/1/serviceCall
+TAG POS=1 TYPE=SELECT FORM=ID:OSSMeta-filter-form ATTR=ID:edit-Column CONTENT=%Created<SP>Date/Time
+TAG POS=1 TYPE=INPUT:TEXT FORM=ID:OSSMeta-filter-form ATTR=ID:edit-Value CONTENT={{!NOW:yyyymmdd}}
+TAG POS=1 TYPE=INPUT:SUBMIT FORM=ID:OSSMeta-filter-form ATTR=ID:edit-submit
+TAG POS=1 TYPE=A ATTR=TXT:SAP<SP>Service<SP>Calls
+TAG POS=1 TYPE=A ATTR=TXT:customise<SP>fields
+TAG POS=1 TYPE=SELECT FORM=ID:OSSMeta-fields-form ATTR=ID:edit-fields CONTENT=%subject:%status:%businessPartner:%businessPartnerName:%type:%createdOn:%closedOn
+TAG POS=1 TYPE=INPUT:SUBMIT FORM=ID:OSSMeta-fields-form ATTR=ID:edit-0
+TAG POS=1 TYPE=SELECT FORM=ID:OSSMeta-filter-form ATTR=ID:edit-Column CONTENT=%Subject
+TAG POS=1 TYPE=SELECT FORM=ID:OSSMeta-filter-form ATTR=ID:edit-Equality CONTENT=%!=
+TAG POS=1 TYPE=INPUT:TEXT FORM=ID:OSSMeta-filter-form ATTR=ID:edit-Value CONTENT=AUP<SP>Enforcement
+TAG POS=1 TYPE=INPUT:SUBMIT FORM=ID:OSSMeta-filter-form ATTR=ID:edit-submit
+TAG POS=1 TYPE=SELECT FORM=ID:OSSMeta-filter-form ATTR=ID:edit-Column CONTENT=%Project<SP>Code
+TAG POS=1 TYPE=SELECT FORM=ID:OSSMeta-filter-form ATTR=ID:edit-Equality CONTENT=%=
+TAG POS=1 TYPE=INPUT:SUBMIT FORM=ID:OSSMeta-filter-form ATTR=ID:edit-submit
+ONDOWNLOAD FOLDER=* FILE=h1_calls.csv WAIT=YES
+TAG POS=1 TYPE=A ATTR=TXT:export<SP>list
+
+'start h2 export
+TAB OPEN
+TAB T=2
+URL GOTO=http://oss2.freenoc.lan/OSS/SAP/3/serviceCall
+TAG POS=1 TYPE=INPUT:SUBMIT FORM=ID:OSSMeta-filter-form ATTR=ID:edit-undo
+ONDOWNLOAD FOLDER=* FILE=h2_calls.csv WAIT=YES
+TAG POS=1 TYPE=A ATTR=TXT:export<SP>list
+
+'customers only tab
+TAB OPEN
+TAB T=3
+URL GOTO=http://oss2.freenoc.lan/OSS/SAP/1/serviceCall
+TAG POS=1 TYPE=SELECT FORM=ID:OSSMeta-filter-form ATTR=ID:edit-Column CONTENT=%Project<SP>Code
+TAG POS=1 TYPE=SELECT FORM=ID:OSSMeta-filter-form ATTR=ID:edit-Equality CONTENT=%!=
+TAG POS=1 TYPE=INPUT:SUBMIT FORM=ID:OSSMeta-filter-form ATTR=ID:edit-submit
+ONDOWNLOAD FOLDER=* FILE=h1_customers_only.csv WAIT=YES
+TAG POS=1 TYPE=A ATTR=TXT:export<SP>list
+
+'Closed calls H1
+TAB OPEN
+TAB T=4
+URL GOTO=http://oss2.freenoc.lan/OSS/SAP/1/serviceCall
+TAG POS=1 TYPE=INPUT:SUBMIT FORM=ID:OSSMeta-filter-form ATTR=ID:edit-reset
+TAG POS=1 TYPE=SELECT FORM=ID:OSSMeta-filter-form ATTR=ID:edit-Column CONTENT=%Closed<SP>Date/Time
+TAG POS=1 TYPE=INPUT:TEXT FORM=ID:OSSMeta-filter-form ATTR=ID:edit-Value CONTENT={{!NOW:yyyymmdd}}
+TAG POS=1 TYPE=INPUT:SUBMIT FORM=ID:OSSMeta-filter-form ATTR=ID:edit-submit
+TAG POS=1 TYPE=SELECT FORM=ID:OSSMeta-filter-form ATTR=ID:edit-Column CONTENT=%Type
+TAG POS=1 TYPE=SELECT FORM=ID:OSSMeta-filter-form ATTR=ID:edit-Equality CONTENT=%!=
+TAG POS=1 TYPE=INPUT:TEXT FORM=ID:OSSMeta-filter-form ATTR=ID:edit-Value CONTENT=Traffic<SP>Policing
+
+'Closed calls H2
+TAB OPEN
+TAB T=5
+URL GOTO=http://oss2.freenoc.lan/OSS/SAP/3/serviceCall
+
+

@@ -1,0 +1,38 @@
+﻿VERSION BUILD=8510617 RECORDER=FX
+'open 1 tab only
+TAB T=1
+
+'ignore errors. this is to allow proceed with macro even if the ip has already been removed
+SET !ERRORIGNORE YES
+
+'wait 2 second instead of default 6s if errors occurs
+SET !TIMEOUT_PAGE 2
+
+'set up datasource
+SET !DATASOURCE jobs.csv 
+SET !DATASOURCE_COLUMNS 8
+
+'set up loop start from second row
+SET !LOOP 2
+SET !DATASOURCE_LINE {{!LOOP}}
+
+'open up jobs
+URL GOTO=http://oss2.freenoc.lan/ABLJob
+TAG POS=1 TYPE=INPUT:TEXT FORM=ID:OSSMeta-filter-form ATTR=ID:edit-Value CONTENT={{!COL1}}
+TAG POS=1 TYPE=INPUT:SUBMIT FORM=ID:OSSMeta-filter-form ATTR=ID:edit-submitonce
+TAG POS=1 TYPE=A ATTR=TXT:{{!COL1}}
+TAG POS=1 TYPE=A ATTR=TXT:Complete<SP>Report
+TAG POS=1 TYPE=SELECT FORM=ID:ABLJob-report-form ATTR=ID:edit-Report-dishTypeAndSize CONTENT=%74;Prodelin
+TAG POS=1 TYPE=INPUT:TEXT FORM=ID:ABLJob-report-form ATTR=ID:edit-Report-cableLength CONTENT=10
+TAG POS=1 TYPE=INPUT:TEXT FORM=ID:ABLJob-report-form ATTR=ID:edit-Report-snr CONTENT=10
+TAG POS=1 TYPE=INPUT:TEXT FORM=ID:ABLJob-report-form ATTR=ID:edit-Report-ebNo CONTENT=10
+TAG POS=1 TYPE=TEXTAREA FORM=ID:ABLJob-report-form ATTR=ID:edit-Report-remarks CONTENT=Closed<SP>by<SP>Avanti
+TAG POS=1 TYPE=INPUT:TEXT FORM=ID:ABLJob-report-form ATTR=ID:edit-Location-latitude CONTENT=012345.2N
+TAG POS=1 TYPE=INPUT:TEXT FORM=ID:ABLJob-report-form ATTR=ID:edit-Location-longitude CONTENT=012345.2W
+TAG POS=1 TYPE=INPUT:TEXT FORM=ID:ABLJob-report-form ATTR=ID:edit-Location-altitude CONTENT=10
+TAG POS=1 TYPE=INPUT:TEXT FORM=ID:ABLJob-report-form ATTR=ID:edit-Location-buildingHeight CONTENT=10
+TAG POS=1 TYPE=INPUT:TEXT FORM=ID:ABLJob-report-form ATTR=ID:edit-Location-antennaHeight CONTENT=10
+TAG POS=1 TYPE=INPUT:TEXT FORM=ID:ABLJob-report-form ATTR=ID:edit-Location-postCode CONTENT=UK-0000
+TAG POS=1 TYPE=TEXTAREA FORM=ID:ABLJob-report-form ATTR=ID:edit-Location-remarks CONTENT=Closed<SP>by<SP>Avanti
+TAG POS=1 TYPE=TEXTAREA FORM=ID:ABLJob-report-form ATTR=ID:edit-Job-remarks CONTENT=Closed<SP>by<SP>Avanti
+TAG POS=1 TYPE=INPUT:SUBMIT FORM=ID:ABLJob-report-form ATTR=ID:edit-0
