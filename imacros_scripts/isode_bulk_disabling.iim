@@ -1,0 +1,10 @@
+﻿VERSION BUILD=8510617 RECORDER=FX
+TAB T=1
+
+SET !LOOP 1 
+URL GOTO=http://mail001-isode.live.ghy.avn.l:8080/imadmin-system/users?page=0.1000
+
+TAG POS={{!LOOP}} TYPE=IMG ATTR=SRC:http://mail001-isode.live.ghy.avn.l:8080/imadmin-system/common/images/b_edit.gif
+
+TAG POS=1 TYPE=INPUT:RADIO FORM=ID:f0 ATTR=ID:account_state_inactive
+TAG POS=1 TYPE=INPUT:SUBMIT FORM=ID:f0 ATTR=*
